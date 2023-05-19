@@ -1,0 +1,114 @@
+{% extends 'base.html' %} {% block content %}
+<button class="btn btn-primary" id="start">Start recording</button>
+<button class="btn btn-primary" id="stop" disabled>Stop recording</button>
+<button class="btn btn-info" id="reload">
+  Reload page to record again
+</button>
+
+<h1 id="search-results-text" class="text-center py-3">Search Results</h1>
+<div id="result-found" class="row justify-content-center">
+  <div class="col-md-6">
+    <h2 id="song-title"></h2>
+    <p id="song-subtitle"></p>
+    <p id="song-type"></p>
+  </div>
+</div>
+<p id="no-result-found">No results Found, try again!</p>
+<p id="loading" class="text-center">Loading...</p>
+
+<script>
+  var gumStream;
+  //stream from getUserMedia()
+  var rec;
+  //Recorder.js object
+  var input;
+  //MediaStreamAudioSourceNode we'll be recording
+  // shim for AudioContext when it's not avb.
+  var AudioContext = window.AudioContext || window.webkitAudioContext;
+  var audioContext;
+  let recordingTimeout;
+  $("#no-result-found").hide();
+  $("#result-found").hide();
+  $("#search-results-text").hide();
+  $("#loading").hide();
+  $("#reload").hide();
+
+  navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then((stream) => {
+      audioContext = new AudioContext();
+
+      /* assign to gumStream for later use */
+      gumStream = stream;
+      /* use the stream */
+      input = audioContext.createMediaStreamSource(stream);
+      /* Create the Recorder object and configure to record mono sound (1 channel) Recording 2 channels will double the file size */
+      rec = new Recorder(input, {
+        numChannels: 1,
+      });
+    });
+
+  function submitAudio(blob) {
+    clearTimeout(recordingTimeout);
+    console.log(blob);
+    const formData = new FormData();
+    formData.append("audio", blob, "audio.wav");
+    $("#loading").show();
+    document.querySelector("#start").disabled = true;
+    $("#reload").show();
+    fetch("/users/find-songs/{{ user.id }}", { method: "POST", body: formData })
+      .then((response) => response.json())
+      .then((data) => {
+        $("#loading").hide();
+        // You can update your page with the result data here
+        try {
+          $("#no-result-found").hide();
+          $("#result-found").show();
+          $("#search-results-text").show();
+
+          $("#song-title").text("Song Title: " + data["track"]["title"]);
+          $("#song-subtitle").text(data["track"]["subtitle"]);
+          $("#song-type").text("Song Type: " + data["track"]["type"]);
+        } catch {
+          $("#no-result-found").show();
+          $("#result-found").hide();
+          $("#search-results-text").hide();
+        }
+      });
+  }
+
+  function stopRecording() {
+    rec.stop();
+    //stop microphone access
+    gumStream.getAudioTracks()[0].stop();
+
+    //create the wav blob and pass it on to createDownloadLink
+    rec.exportWAV(submitAudio);
+  }
+
+  document.querySelector("#start").addEventListener("click", () => {
+    rec.record();
+    recordingTimeout = setTimeout(() => {
+      document.querySelector("#start").disabled = false;
+      document.querySelector("#stop").disabled = true;
+      if (rec.recording) {
+        stopRecording();
+      }
+    }, 4200); // stop recording after 20 seconds
+    document.querySelector("#start").disabled = true;
+    document.querySelector("#stop").disabled = false;
+  });
+
+  document.querySelector("#stop").addEventListener("click", () => {
+    if (rec.recording) {
+      stopRecording();
+    }
+    document.querySelector("#start").disabled = false;
+    document.querySelector("#stop").disabled = true;
+  });
+  document.querySelector("#reload").addEventListener("click", () => {
+    window.location.reload();
+  });
+</script>
+
+{% endblock %}

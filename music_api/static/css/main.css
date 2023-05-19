@@ -1,0 +1,118 @@
+ul.profile-list {
+  list-style-type: none;
+  margin-top: 2em;
+  padding-left: 0;
+}
+ul.profile-list li {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.song-results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  font-size: 1.1em;
+  padding-left: 5em;
+}
+
+
+.song-result {
+  display: flex;
+  flex-direction: column;
+  padding: 3em 0em;
+  width: 28%;
+  margin: 1em;
+  min-width: 200px;
+}
+
+.song-result img {
+  align-self: center;
+  margin-top: 1em;
+}
+
+.song-result a {
+  display: block;
+  margin-left: 1em;
+}
+
+.add-songs {
+  position: fixed;
+    top: 45%;
+    left: 0;
+    background: yellow;
+    border: 2px solid #bfbfb6;
+    padding: 1em;
+    font-weight: bold;
+    /* font-size: 1.2em; */
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.album-image {
+  width: 200px;
+  height: auto;
+}
+
+.remove-button {
+  margin-top: 20px;
+  margin-left: 1em;
+}
+
+input[type=checkbox] + label {
+  display: flex;
+  margin: 0.8em;
+  cursor: pointer;
+  padding: 0.2em;
+  background: #ffeb3b24;
+  align-items: center;
+}
+
+input[type=checkbox] {
+  display: none;
+}
+
+input[type=checkbox] + label:before {
+  content: "\2714";
+  border: 0.1em solid #000;
+  border-radius: 0.2em;
+  display: inline-block;
+  /* width: 1em; */
+  /* height: 1em; */
+  /* padding-left: 0.2em; */
+  /* padding-bottom: 0.3em; */
+  /* margin-right: 0.2em; */
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: bottom;
+  color: transparent;
+  transition: .2s;
+}
+
+input[type=checkbox] + label:active:before {
+  transform: scale(0);
+}
+
+input[type=checkbox]:checked + label:before {
+  background-color: MediumSeaGreen;
+  border-color: MediumSeaGreen;
+  color: #fff;
+  /* background: green; */
+}
+
+input[type=checkbox]:disabled + label:before {
+  transform: scale(1);
+  border-color: #aaa;
+}
+
+input[type=checkbox]:checked:disabled + label:before {
+  transform: scale(1);
+  background-color: #bfb;
+  border-color: #bfb;
+}
+
+
+form {
+  /* max-width: 400px; */
+  margin: 2em 0;
+}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1 class="display-5">Hello {{user.username }}</h1>
+
+<h4>This is a private page to add and view your playlists</h4>
+
+<ul class="profile-list">
+	{% if 'user_id' in session %} {% for playlist in playlists %}
+	<li>
+		Playlist Name :
+		<a href="/playlists/{{ playlist.id }}">{{ playlist.name }}</a><a class="btn btn-primary mx-2" href="/playlists/{{ playlist.id }}">Playlist</a>
+		<form>
+			{{form.hidden_tag()}}
+			<button
+				class="btn btn-info"
+				formmethod="GET"
+				formaction="/playlists/{{ playlist.id }}/search"
+			>
+				Add Songs to playlist
+			</button>
+			<button
+				class="btn btn-primary"
+				formmethod="GET"
+				formaction="/playlists/{{ playlist.id }}/search"
+			>
+				Search new songs for this playlist
+			</button>
+
+			<button
+				class="btn btn-primary"
+				formmethod="GET"
+				formaction="/playlists/{{ playlist.id }}/update"
+			>
+				Edit Playlist Name
+			</button>
+			<button
+				class="btn btn-danger"
+				formmethod="POST"
+				formaction="/playlists/{{ playlist.id }}/delete"
+			>
+				Delete
+			</button>
+		</form>
+	</li>
+	{% endfor %} {% endif %}
+</ul>
+
+<h4>Add a new playlist</h4>
+<form method="POST">
+	{% include "partials/_form.html" %}
+	<button class="btn btn-primary" type="submit">Add</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,8 @@
+_pycache_/
+venv/
+api.py
+scratch.py
+.vscode/
+.env
+.flaskenv
+*.wav

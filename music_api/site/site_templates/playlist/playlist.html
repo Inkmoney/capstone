@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block content %}
+<a class="btn btn-primary" href="/playlist">Profile</a>
+<h4>Playlist: <b>{{ playlist.name }}</b></h4>
+
+{% if playlist.songs %}
+<div class="song-results">
+	{% for song in playlist.songs %}
+	<div class="song-result">
+		<div>
+			<span class=""
+				><strong>{{ song.title }}</strong>
+				{% if song.spotify_id %}
+				<br />
+			</span>
+			by {{ song.artists }}
+			<small>{{song.artist}}</small>
+			{% endif %}
+			<br />
+			<span>{{song.album_name}}</span><br />
+			{% if song.spotify_id %}
+
+			<iframe
+				src="https://open.spotify.com/embed/track/{{ song['spotify_id'] }}"
+				width="300"
+				height="380"
+				frameborder="0"
+				allowtransparency="true"
+				allow="encrypted-media"
+			></iframe>
+			{% else %}
+			<iframe
+				width="300"
+				height="250"
+				src="https://www.youtube.com/embed/{{ song['youtube_id'] }}"
+				title="{{song['title']}}"
+				frameborder="0"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowfullscreen
+			></iframe>
+			{% endif %}
+		</div>
+		<form class="remove-button" method="POST">
+			<input type="hidden" name="remove" value="true" />
+			<input type="hidden" name="song" value="{{song.id}}" />
+			<input type="submit" name="submit" value="Remove from Playlist" />
+		</form>
+	</div>
+	{% endfor %}
+</div>
+{% else %}
+<p>There are no songs yet on this playlist, add some!</p>
+{% endif %}
+
+<p>
+	<a class="btn btn-primary" href="/playlists/{{ playlist.id }}/search">
+		Add Songs to this playlist
+	</a>
+</p>
+
+{% endblock %}

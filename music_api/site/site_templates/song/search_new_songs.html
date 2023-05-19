@@ -1,0 +1,73 @@
+{% extends 'base.html' %} {% block content %}
+<a class="btn btn-primary" href="/playlist">Profile</a>
+<h1>
+	Add songs to playlist
+	<a href="/playlists/{{playlist.id}}">{{playlist.name}}</a>
+</h1>
+
+<form method="POST">
+	{% include "partials/_form.html" %}
+	<button class="btn btn-primary" type="submit">Search</button>
+	<input type="hidden" name="form" value="search_songs" />
+</form>
+
+{% if resultsSong %}
+<form class="container" method="POST">
+	<input type="submit" value="Add checked songs" class="add-songs" />
+	<div class="container song-results">
+		{% for result in resultsSong %}
+		<div class="song-result">
+			<input
+				type="checkbox"
+				id="{{ result['spotify_id'] }}"
+				name="track"
+				value="{{ serialize(result) }} "
+			/>
+			<label for="{{ result['spotify_id'] }}">
+				<a href="{{result['url']}}" target="_blank">
+					{{ result['title']}} by {{ result['artists'] }}</a
+				></label
+			>
+			<iframe
+				src="https://open.spotify.com/embed/track/{{ result['spotify_id'] }}"
+				width="300"
+				height="380"
+				frameborder="0"
+				allowtransparency="true"
+				allow="encrypted-media"
+			></iframe>
+		</div>
+		{%endfor %} {% if youtube_results %}
+
+		{% for result in youtube_results %}
+		<div class="song-result">
+			<input
+				type="checkbox"
+				id="{{ result['id'] }}"
+				name="track"
+				value="{{ serialize(result) }} "
+			/>
+			<label for="{{ result['id'] }}">
+				<a
+					href="https://www.youtube.com/watch?v={{result['id']}}"
+					target="_blank"
+				>
+					{{ result['title']}}</a
+				></label
+			>
+			<iframe
+				width="300"
+				height="250"
+				src="https://www.youtube.com/embed/{{ result['youtube_id'] }}"
+				title="{{result['title']}}"
+				frameborder="0"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				allowfullscreen
+			></iframe>
+		</div>
+		{%endfor %} {% endif %}
+	</div>
+	<input type="hidden" name="form" value="pick_songs" />
+</form>
+
+{%endif %} {% endblock %}
